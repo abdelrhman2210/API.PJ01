@@ -1,9 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using API_PJ01_Persistence.Data.Contexts;
+using API_PJ01_Domain.Contracts;
+using API_PJ01_Persistence;
 
 namespace API_PJ01_Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +18,23 @@ namespace API_PJ01_Web
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddDbContext<StoreDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
+
             var app = builder.Build();
+
+            #region Initialize DB
+
+            using var scope = app.Services.CreateScope();
+            var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+            await dbInitializer.InitializeAsync(); 
+
+            #endregion
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
