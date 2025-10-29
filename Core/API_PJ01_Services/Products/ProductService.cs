@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using API_PJ01_Domain.Contracts;
 using API_PJ01_Domain.Entities.Products;
 using API_PJ01_Services.Abstractions.Products;
+using API_PJ01_Services.Specifications;
+using API_PJ01_Services.Specifications.Products;
 using API_PJ01_Shared.Dtos.Products;
 using AutoMapper;
 
@@ -15,13 +17,21 @@ namespace API_PJ01_Services.Products
     {
         public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync()
         {
-            var products = await _unitOfWork.GetRepository<int, Product>().GetAllAsync();
+            //var spec = new BaseSpecifications<int, Product>(null);
+            //spec.Includes.Add(P => P.Brand);
+            //spec.Includes.Add(P => P.Type);
+
+            var spec = new ProductsWithBrandAndTypeSpecifications();
+
+            var products = await _unitOfWork.GetRepository<int, Product>().GetAllAsync(spec);
             var result = _mapper.Map<IEnumerable<ProductResponse>>(products);
             return result;
         }
 
         public async Task<ProductResponse> GetProductByIdAsync(int id)
         {
+            var spec = new ProductsWithBrandAndTypeSpecifications(id);
+
             var product = await _unitOfWork.GetRepository<int, Product>().GetAsync(id);
             var result = _mapper.Map<ProductResponse>(product);
             return result;

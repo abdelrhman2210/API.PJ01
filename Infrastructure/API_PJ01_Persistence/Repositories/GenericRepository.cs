@@ -7,7 +7,7 @@ using API_PJ01_Domain.Contracts;
 using API_PJ01_Domain.Entities;
 using API_PJ01_Domain.Entities.Products;
 using API_PJ01_Persistence.Data.Contexts;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;    
 
 namespace API_PJ01_Persistence.Repositories
 {
@@ -47,6 +47,22 @@ namespace API_PJ01_Persistence.Repositories
         public void Delete(TEntity entity)
         {
             _context.Remove(entity);
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TKey, TEntity> spec, bool changeTracker = false)
+        {
+            return await ApplySpecifications(spec).ToListAsync();
+        }
+
+        public async Task<TEntity> GetAsync(ISpecifications<TKey, TEntity> spec)
+        {
+            return await ApplySpecifications(spec).FirstOrDefaultAsync();
+        }
+
+        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TKey, TEntity> spec)
+        {
+            var query = SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec);
+            return query;
         }
     }
 }
