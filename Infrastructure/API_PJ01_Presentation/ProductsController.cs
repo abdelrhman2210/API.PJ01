@@ -13,9 +13,9 @@ namespace API_PJ01_Presentation
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet] // GET : baseURL/api/products
-        public async Task<IActionResult> GetAllProductsAsync()
+        public async Task<IActionResult> GetAllProductsAsync(int? brandId, int? typeId)
         {
-            var result = await _serviceManager.ProductService.GetAllProductsAsync();
+            var result = await _serviceManager.ProductService.GetAllProductsAsync(brandId, typeId);
             if (result is null) return BadRequest();
             return Ok(result);
         }
