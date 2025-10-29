@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using API_PJ01_Domain.Contracts;
 using API_PJ01_Domain.Entities;
+using API_PJ01_Domain.Entities.Products;
 using API_PJ01_Persistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +15,22 @@ namespace API_PJ01_Persistence.Repositories
     {
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool changeTracker = false)
         {
+            if (typeof(TEntity) == typeof(Product))
+            {
+                return changeTracker ?
+                    await _context.Products.Include(P => P.Brand).Include(P => P.Type).ToListAsync() as IEnumerable<TEntity>
+                    : await _context.Products.Include(P => P.Brand).Include(P => P.Type).AsNoTracking().ToListAsync() as IEnumerable<TEntity>;
+            }
             return changeTracker ?
                 await _context.Set<TEntity>().ToListAsync() :
                 await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
         public async Task<TEntity?> GetAsync(TKey key)
         {
+            if (typeof(TEntity) == typeof(Product))
+            {
+                return await _context.Products.Include(P => P.Brand).Include(P => P.Type).FirstOrDefaultAsync(P => P.Id == (key as int?)) as TEntity;
+            }
             return await _context.Set<TEntity>().FindAsync(key);
         }
 
