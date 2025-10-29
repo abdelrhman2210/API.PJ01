@@ -1,6 +1,8 @@
 using API_PJ01_Domain.Contracts;
 using API_PJ01_Persistence;
 using API_PJ01_Persistence.Data.Contexts;
+using API_PJ01_Services;
+using API_PJ01_Services.Abstractions;
 using API_PJ01_Services.Mapping.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,7 @@ namespace API_PJ01_Web
 
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
             builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile()));
 
 
