@@ -12,5 +12,7 @@ namespace API_PJ01_Domain.Contracts
     {
         List<Expression<Func<TEntity, object>>> Includes { get; set; }
         Expression<Func<TEntity, bool>>? Criteria { get; set; }
+        public Expression<Func<TEntity, object>>? OrderBy { get; set; }
+        public Expression<Func<TEntity, object>>? OrderByDesc { get; set; }
     }
 }
