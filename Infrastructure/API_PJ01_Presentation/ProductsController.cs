@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API_PJ01_Services.Abstractions;
+using API_PJ01_Shared.Dtos.Products;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_PJ01_Presentation
@@ -13,9 +14,9 @@ namespace API_PJ01_Presentation
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet] // GET : baseURL/api/products
-        public async Task<IActionResult> GetAllProductsAsync(int? brandId, int? typeId, string? sort, string? search, int? pageIndex = 1, int? pageSize = 5)
+        public async Task<IActionResult> GetAllProductsAsync([FromQuery]ProductQueryParameters parameters)
         {
-            var result = await _serviceManager.ProductService.GetAllProductsAsync(brandId, typeId, sort, search, pageIndex, pageSize);
+            var result = await _serviceManager.ProductService.GetAllProductsAsync(parameters);
             if (result is null) return BadRequest();
             return Ok(result);
         }

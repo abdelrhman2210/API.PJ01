@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using API_PJ01_Domain.Entities.Products;
+using API_PJ01_Shared.Dtos.Products;
 
 namespace API_PJ01_Services.Specifications.Products
 {
@@ -15,19 +16,19 @@ namespace API_PJ01_Services.Specifications.Products
             AddIncludes();
         }
 
-        public ProductsWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort, string? search, int? pageIndex, int? pageSize) : base
+        public ProductsWithBrandAndTypeSpecifications(ProductQueryParameters parameters) : base
             (
                 p => 
-                (!brandId.HasValue || p.BrandId == brandId)
+                (!parameters.brandId.HasValue || p.BrandId == parameters.brandId)
                 &&
-                (!typeId.HasValue || p.TypeId == typeId)
+                (!parameters.typeId.HasValue || p.TypeId == parameters.typeId)
                 &&
-                (string.IsNullOrEmpty(search) || p.Name.Contains(search.ToLower()))
+                (string.IsNullOrEmpty(parameters.search) || p.Name.Contains(parameters.search.ToLower()))
             )
         {
             
-            ApplyPagination(pageSize.Value, pageIndex.Value);
-            ApplySorting(sort);
+            ApplyPagination(parameters.pageSize, parameters.pageIndex);
+            ApplySorting(parameters.sort);
             AddIncludes();
         }
 
