@@ -16,10 +16,21 @@ namespace API_PJ01_Persistence
         {
             var query = inputQuery; // __context.Products
 
+            //check if there is criteria to filter
             if (spec.Criteria is not null)
             {
                 query = query.Where(spec.Criteria); // __context.Products.Where(P => P.id == 12)
             }
+
+            //check if there is order by expression to sort the data 
+            if (spec.OrderBy is not null)
+            {
+                query = query.OrderBy(spec.OrderBy); // __context.Products.Where(P => P.id == 12).OrderBy(P => P.Name)
+            }else if (spec.OrderByDesc is not null)
+            {
+                query = query.OrderByDescending(spec.OrderByDesc); // __context.Products.Where(P => P.id == 12).OrderByDescending(P => P.Name)
+            }
+
 
             // __context.Products.Where(P => P.id == 12).Include(P => P.Brand)
             // __context.Products.Where(P => P.id == 12).Include(P => P.Brand).Include(P => P.Type)
