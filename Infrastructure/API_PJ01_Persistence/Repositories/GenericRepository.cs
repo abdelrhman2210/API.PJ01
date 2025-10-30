@@ -64,5 +64,10 @@ namespace API_PJ01_Persistence.Repositories
             var query = SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec);
             return query;
         }
+
+        public async Task<int> CountAsync(ISpecifications<TKey, TEntity> spec)
+        {
+            return await ApplySpecifications(spec).CountAsync();
+        }
     }
 }
