@@ -13,16 +13,16 @@ namespace API_PJ01_Presentation
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet] // GET : baseURL/api/products
-        public async Task<IActionResult> GetAllProductsAsync(int? brandId, int? typeId, string? sort)
+        public async Task<IActionResult> GetAllProductsAsync(int? brandId, int? typeId, string? sort, string? search, int? pageIndex = 1, int? pageSize = 5)
         {
-            var result = await _serviceManager.ProductService.GetAllProductsAsync(brandId, typeId, sort);
+            var result = await _serviceManager.ProductService.GetAllProductsAsync(brandId, typeId, sort, search, pageIndex, pageSize);
             if (result is null) return BadRequest();
             return Ok(result);
         }
 
         [HttpGet("{id}")] // GET : baseURL/api/products/1
         public async Task<ActionResult> GetProductById(int? id)
-        {
+        { 
             if (id is null) return BadRequest();
             var result = await _serviceManager.ProductService.GetProductByIdAsync(id.Value);
             if (result is null) return NotFound(); // 404

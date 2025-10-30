@@ -15,13 +15,23 @@ namespace API_PJ01_Services.Specifications.Products
             AddIncludes();
         }
 
-        public ProductsWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort) : base
+        public ProductsWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort, string? search, int? pageIndex, int? pageSize) : base
             (
                 p => 
                 (!brandId.HasValue || p.BrandId == brandId)
                 &&
                 (!typeId.HasValue || p.TypeId == typeId)
+                &&
+                (string.IsNullOrEmpty(search) || p.Name.Contains(search.ToLower()))
             )
+        {
+            
+            ApplyPagination(pageSize.Value, pageIndex.Value);
+            ApplySorting(sort);
+            AddIncludes();
+        }
+
+        private void ApplySorting(string? sort)
         {
             if (!string.IsNullOrEmpty(sort))
             {
@@ -45,8 +55,6 @@ namespace API_PJ01_Services.Specifications.Products
                 //OrderBy = P => P.Name;
                 AddOrderBy(P => P.Name);
             }
-
-            AddIncludes();
         }
 
         private void AddIncludes()

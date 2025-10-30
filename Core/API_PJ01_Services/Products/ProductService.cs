@@ -15,9 +15,9 @@ namespace API_PJ01_Services.Products
 {
     public class ProductService(IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService
     {
-        public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync(int? brandId, int? typeId, string? sort)
+        public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync(int? brandId, int? typeId, string? sort, string? search, int? pageIndex, int? pageSize)
         {
-            var spec = new ProductsWithBrandAndTypeSpecifications(brandId, typeId, sort);
+            var spec = new ProductsWithBrandAndTypeSpecifications(brandId, typeId, sort, search, pageIndex, pageSize);
 
 
             var products = await _unitOfWork.GetRepository<int, Product>().GetAllAsync(spec);

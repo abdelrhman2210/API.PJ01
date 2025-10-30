@@ -19,17 +19,27 @@ namespace API_PJ01_Persistence
             //check if there is criteria to filter
             if (spec.Criteria is not null)
             {
-                query = query.Where(spec.Criteria); // __context.Products.Where(P => P.id == 12)
+                query = query.Where(spec.Criteria); 
             }
+
+
 
             //check if there is order by expression to sort the data 
             if (spec.OrderBy is not null)
             {
-                query = query.OrderBy(spec.OrderBy); // __context.Products.Where(P => P.id == 12).OrderBy(P => P.Name)
-            }else if (spec.OrderByDesc is not null)
-            {
-                query = query.OrderByDescending(spec.OrderByDesc); // __context.Products.Where(P => P.id == 12).OrderByDescending(P => P.Name)
+                query = query.OrderBy(spec.OrderBy);
             }
+            else if (spec.OrderByDesc is not null)
+            {
+                query = query.OrderByDescending(spec.OrderByDesc);
+            }
+
+
+            if (spec.IsPagination)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take); 
+            }
+
 
 
             // __context.Products.Where(P => P.id == 12).Include(P => P.Brand)
