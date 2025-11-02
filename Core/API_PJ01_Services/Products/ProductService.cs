@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using API_PJ01_Domain.Contracts;
 using API_PJ01_Domain.Entities.Products;
+using API_PJ01_Domain.Exceptions.NotFound;
 using API_PJ01_Services.Abstractions.Products;
 using API_PJ01_Services.Specifications;
 using API_PJ01_Services.Specifications.Products;
@@ -35,6 +36,8 @@ namespace API_PJ01_Services.Products
             var spec = new ProductsWithBrandAndTypeSpecifications(id);
 
             var product = await _unitOfWork.GetRepository<int, Product>().GetAsync(id);
+            
+            if (product is null) throw new ProductNotFoundException(id);
             var result = _mapper.Map<ProductResponse>(product);
             return result;
         }
