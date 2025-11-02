@@ -4,6 +4,8 @@ using API_PJ01_Persistence.Data.Contexts;
 using API_PJ01_Services;
 using API_PJ01_Services.Abstractions;
 using API_PJ01_Services.Mapping.Products;
+using API_PJ01_Shared.ErrorModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,7 +33,25 @@ namespace API_PJ01_Web
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
             builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile(builder.Configuration)));
+            
+            builder.Services.Configure<ApiBehaviorOptions>(config =>
+            {
+                config.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                    var errors = actionContext.ModelState.Where(M => M.Value.Errors.Any())
+                        .Select(M => new ValidationError()
+                        {
+                            Field = M.Key,
+                            Errors = M.Value.Errors.Select(E => E.ErrorMessage)
+                        }).ToList();
 
+                    var response = new ValidationErrorResponse()
+                    {
+                        Errors = errors
+                    };
+                    return new BadRequestObjectResult(response);
+                };
+            });
 
             var app = builder.Build();
 

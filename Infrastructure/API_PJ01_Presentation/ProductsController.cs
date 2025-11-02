@@ -26,7 +26,6 @@ namespace API_PJ01_Presentation
         { 
             if (id is null) return BadRequest();
             var result = await _serviceManager.ProductService.GetProductByIdAsync(id.Value);
-            if (result is null) return NotFound(); // 404
             return Ok(result); // 200
         }
 
