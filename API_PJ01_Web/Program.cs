@@ -5,6 +5,7 @@ using API_PJ01_Services;
 using API_PJ01_Services.Abstractions;
 using API_PJ01_Services.Mapping.Products;
 using API_PJ01_Shared.ErrorModels;
+using API_PJ01_Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,67 +20,12 @@ namespace API_PJ01_Web
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddAllServices(builder.Configuration);
 
-            builder.Services.AddDbContext<StoreDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-
-            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IServiceManager, ServiceManager>();
-            builder.Services.AddAutoMapper(m => m.AddProfile(new ProductProfile(builder.Configuration)));
-            
-            builder.Services.Configure<ApiBehaviorOptions>(config =>
-            {
-                config.InvalidModelStateResponseFactory = (actionContext) =>
-                {
-                    var errors = actionContext.ModelState.Where(M => M.Value.Errors.Any())
-                        .Select(M => new ValidationError()
-                        {
-                            Field = M.Key,
-                            Errors = M.Value.Errors.Select(E => E.ErrorMessage)
-                        }).ToList();
-
-                    var response = new ValidationErrorResponse()
-                    {
-                        Errors = errors
-                    };
-                    return new BadRequestObjectResult(response);
-                };
-            });
 
             var app = builder.Build();
 
-            #region Initialize DB
-
-            using var scope = app.Services.CreateScope();
-            var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            await dbInitializer.InitializeAsync(); 
-
-            #endregion
-
-            app.UseMiddleware<Middlewares.GlobalErrorHandlingMiddleware>();
-
-            app.UseStaticFiles();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
+            await app.ConfigureMiddlewareAsync();
 
             app.Run();
         }
