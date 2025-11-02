@@ -43,6 +43,8 @@ namespace API_PJ01_Web
 
             #endregion
 
+            app.UseMiddleware<Middlewares.GlobalErrorHandlingMiddleware>();
+
             app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
