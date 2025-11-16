@@ -25,6 +25,7 @@ namespace API_PJ01_Persistence
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBasketRepository, BasketRepository>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
 
             services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
                 ConnectionMultiplexer.Connect(configuration.GetConnectionString(name: "RedisConnection"))
