@@ -8,6 +8,7 @@ using API_PJ01_Persistence.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace API_PJ01_Persistence
 {
@@ -22,6 +23,11 @@ namespace API_PJ01_Persistence
 
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+                ConnectionMultiplexer.Connect(configuration.GetConnectionString(name: "RedisConnection"))
+            );
+
             return services;
         }
     }
