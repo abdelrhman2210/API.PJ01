@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using API_PJ01_Services.Abstractions.Baskets;
 using API_PJ01_Services.Abstractions.Products;
 
 namespace API_PJ01_Services.Abstractions
@@ -10,5 +11,6 @@ namespace API_PJ01_Services.Abstractions
     public interface IServiceManager
     {
         IProductService ProductService { get; }
+        IBasketService BasketService { get; }
     }
 }
