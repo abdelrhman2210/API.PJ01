@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using API_PJ01_Presentation.Attributes;
 using API_PJ01_Services.Abstractions;
 using API_PJ01_Shared.Dtos.Pagination;
 using API_PJ01_Shared.Dtos.Products;
@@ -20,6 +21,7 @@ namespace API_PJ01_Presentation
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginationResponse<ProductResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
+        [Cache(100)] // Cache for 100 seconds
         public async Task<ActionResult<PaginationResponse<ProductResponse>>> GetAllProductsAsync([FromQuery]ProductQueryParameters parameters)
         {
             var result = await _serviceManager.ProductService.GetAllProductsAsync(parameters);
