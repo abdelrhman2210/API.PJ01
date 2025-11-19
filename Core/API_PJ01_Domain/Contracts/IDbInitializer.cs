@@ -9,5 +9,6 @@ namespace API_PJ01_Domain.Contracts
     public interface IDbInitializer
     {
         Task InitializeAsync();
+        Task InitializeIdentityAsync();
     }
 }
