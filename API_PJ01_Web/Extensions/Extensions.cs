@@ -1,8 +1,11 @@
 ﻿using API_PJ01_Domain.Contracts;
+using API_PJ01_Domain.Entities.Identity;
 using API_PJ01_Persistence;
+using API_PJ01_Persistence.Identity.Contexts;
 using API_PJ01_Services;
 using API_PJ01_Shared.ErrorModels;
 using API_PJ01_Web.Middlewares;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -17,6 +20,7 @@ namespace API_PJ01_Web.Extensions
             services.AddInfrastructureServices(configuration);
             services.AddApplicationServices(configuration);
             services.ConfigureApibehaviourOptions();
+            services.AddIdentityServices();
 
             return services;
         }
@@ -25,19 +29,22 @@ namespace API_PJ01_Web.Extensions
         {
             services.Configure<ApiBehaviorOptions>(config =>
             {
-                config.InvalidModelStateResponseFactory = (actionContext) =>
+                config.InvalidModelStateResponseFactory = actionContext =>
                 {
-                    var errors = actionContext.ModelState.Where(M => M.Value.Errors.Any())
-                        .Select(M => new ValidationError()
+                    var errors = actionContext.ModelState
+                        .Where(m => m.Value.Errors.Any())
+                        .Select(m => new ValidationError
                         {
-                            Field = M.Key,
-                            Errors = M.Value.Errors.Select(E => E.ErrorMessage)
-                        }).ToList();
+                            Field = m.Key,
+                            Errors = m.Value.Errors.Select(e => e.ErrorMessage)
+                        })
+                        .ToList();
 
-                    var response = new ValidationErrorResponse()
+                    var response = new ValidationErrorResponse
                     {
                         Errors = errors
                     };
+
                     return new BadRequestObjectResult(response);
                 };
             });
@@ -48,24 +55,31 @@ namespace API_PJ01_Web.Extensions
         private static IServiceCollection AddWebServices(this IServiceCollection services)
         {
             services.AddControllers();
-
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             return services;
         }
 
+        private static IServiceCollection AddIdentityServices(this IServiceCollection services)
+        {
+            services.AddIdentityCore<AppUser>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<IdentityStoreDbContext>();
 
-
+            return services;
+        }
 
         public static async Task<WebApplication> ConfigureMiddlewareAsync(this WebApplication app)
         {
-            #region Initialize DB
-
+            // Initialize DB
             await app.SeedData();
 
-            #endregion
-
+            // Global error handling
             app.AddErrorHandling();
+
             app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
@@ -79,16 +93,17 @@ namespace API_PJ01_Web.Extensions
 
             app.UseAuthorization();
 
-
             app.MapControllers();
+
             return app;
         }
 
         private static async Task<WebApplication> SeedData(this WebApplication app)
         {
-            var scope = app.Services.CreateScope();
+            using var scope = app.Services.CreateScope();
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
             await dbInitializer.InitializeAsync();
+            await dbInitializer.InitializeIdentityAsync();
             return app;
         }
 

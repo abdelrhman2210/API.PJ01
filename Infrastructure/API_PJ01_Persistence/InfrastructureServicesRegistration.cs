@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using API_PJ01_Domain.Contracts;
 using API_PJ01_Persistence.Data.Contexts;
+using API_PJ01_Persistence.Identity.Contexts;
 using API_PJ01_Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,11 @@ namespace API_PJ01_Persistence
             services.AddDbContext<StoreDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString(name: "DefaultConnection"));
+            });
+
+            services.AddDbContext<IdentityStoreDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString(name: "IdentityConnection"));
             });
 
             services.AddScoped<IDbInitializer, DbInitializer>();
