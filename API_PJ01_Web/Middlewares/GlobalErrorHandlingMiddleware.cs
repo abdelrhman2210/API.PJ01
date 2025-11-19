@@ -1,5 +1,6 @@
 ﻿using API_PJ01_Domain.Exceptions.BadRequest;
 using API_PJ01_Domain.Exceptions.NotFound;
+using API_PJ01_Domain.Exceptions.Unauthorized;
 using API_PJ01_Shared.ErrorModels;
 
 namespace API_PJ01_Web.Middlewares
@@ -36,6 +37,7 @@ namespace API_PJ01_Web.Middlewares
                 {
                     NotFoundException => StatusCodes.Status404NotFound,
                     BadRequestException => StatusCodes.Status400BadRequest,
+                    UnauthorizedException => StatusCodes.Status401Unauthorized,
                     _ => StatusCodes.Status500InternalServerError
                 };
 

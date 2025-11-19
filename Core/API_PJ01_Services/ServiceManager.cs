@@ -4,14 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API_PJ01_Domain.Contracts;
+using API_PJ01_Domain.Entities.Identity;
 using API_PJ01_Services.Abstractions;
+using API_PJ01_Services.Abstractions.Auth;
 using API_PJ01_Services.Abstractions.Baskets;
 using API_PJ01_Services.Abstractions.Cache;
 using API_PJ01_Services.Abstractions.Products;
+using API_PJ01_Services.Auth;
 using API_PJ01_Services.Baskets;
 using API_PJ01_Services.Cache;
 using API_PJ01_Services.Products;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace API_PJ01_Services
 {
@@ -19,7 +23,8 @@ namespace API_PJ01_Services
         IUnitOfWork _unitOfWork, 
         IMapper _mapper,
         IBasketRepository _basketRepository,
-        ICacheRepository _cacheRepository
+        ICacheRepository _cacheRepository,
+        UserManager<AppUser> _userManager
         ) : IServiceManager
     {
         public IProductService ProductService { get; } = new ProductService(_unitOfWork , _mapper);
@@ -27,5 +32,7 @@ namespace API_PJ01_Services
         public IBasketService BasketService { get; } = new BasketService(_basketRepository, _mapper);
 
         public ICacheService CacheService { get; } = new CacheService(_cacheRepository);
+
+        public IAuthService AuthService { get; } = new AuthService(_userManager);
     }
 }
