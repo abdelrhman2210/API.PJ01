@@ -8,31 +8,31 @@ using Microsoft.AspNetCore.Mvc;
 namespace API_PJ01_Presentation
 {
     [ApiController]
-    [Route(template: "api/[controller]")]
+    [Route("api/[controller]")]
     public class BuggyController : ControllerBase
     {
-        [HttpGet(template: "notfound")] //GET: baseUrl/api/buggy/notfound
+        [HttpGet("notfound")] //GET: baseUrl/api/buggy/notfound
         public IActionResult GetNotFoundResponse()
         {
             // logic
             return NotFound();
         }
 
-        [HttpGet(template: "badrequest")] //GET: baseUrl/api/buggy/badrequest
+        [HttpGet("badrequest")] //GET: baseUrl/api/buggy/badrequest
         public IActionResult GetBadRequestResponse()
         {
             // logic
             return BadRequest();
         }
 
-        [HttpGet(template: "badrequest/{id}")] //GET: baseUrl/api/buggy/badrequest/{id}
+        [HttpGet("badrequest/{id}")] //GET: baseUrl/api/buggy/badrequest/{id}
         public IActionResult GetValidationErrorResponse(int id)
         {
             // logic
             return BadRequest();
         }
 
-        [HttpGet(template: "servererror")] //GET: baseUrl/api/buggy/servererror
+        [HttpGet("servererror")] //GET: baseUrl/api/buggy/servererror
         public IActionResult GetServerErrorResponse()
         {
             // logic
@@ -40,7 +40,7 @@ namespace API_PJ01_Presentation
             return BadRequest();
         }
 
-        [HttpGet(template: "unauthorized")] //GET: baseUrl/api/buggy/unauthorized
+        [HttpGet("unauthorized")] //GET: baseUrl/api/buggy/unauthorized
         public IActionResult GetUnauthorizedResponse()
         {
             // logic

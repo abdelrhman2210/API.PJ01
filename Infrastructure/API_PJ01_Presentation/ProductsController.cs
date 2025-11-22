@@ -43,7 +43,7 @@ namespace API_PJ01_Presentation
             return Ok(result); // 200
         }
 
-        [HttpGet(template: "brands")] // GET: baseUrl/api/products/brands
+        [HttpGet("brands")] // GET: baseUrl/api/products/brands
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BrandTypeResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
@@ -54,7 +54,7 @@ namespace API_PJ01_Presentation
             return Ok(result); // 200
         }
 
-        [HttpGet(template: "types")] // GET: baseUrl/api/products/types
+        [HttpGet("types")] // GET: baseUrl/api/products/types
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BrandTypeResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))] 

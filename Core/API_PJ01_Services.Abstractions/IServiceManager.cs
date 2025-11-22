@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API_PJ01_Services.Abstractions.Auth;
 using API_PJ01_Services.Abstractions.Baskets;
 using API_PJ01_Services.Abstractions.Cache;
+using API_PJ01_Services.Abstractions.Orders;
 using API_PJ01_Services.Abstractions.Products;
 
 namespace API_PJ01_Services.Abstractions
@@ -16,5 +17,6 @@ namespace API_PJ01_Services.Abstractions
         IBasketService BasketService { get; }
         ICacheService CacheService { get; }
         IAuthService AuthService { get; }
+        IOrderService OrderService { get; }
     }
 }

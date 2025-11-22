@@ -9,10 +9,12 @@ using API_PJ01_Services.Abstractions;
 using API_PJ01_Services.Abstractions.Auth;
 using API_PJ01_Services.Abstractions.Baskets;
 using API_PJ01_Services.Abstractions.Cache;
+using API_PJ01_Services.Abstractions.Orders;
 using API_PJ01_Services.Abstractions.Products;
 using API_PJ01_Services.Auth;
 using API_PJ01_Services.Baskets;
 using API_PJ01_Services.Cache;
+using API_PJ01_Services.Orders;
 using API_PJ01_Services.Products;
 using API_PJ01_Shared;
 using AutoMapper;
@@ -38,5 +40,7 @@ namespace API_PJ01_Services
         public ICacheService CacheService { get; } = new CacheService(_cacheRepository);
 
         public IAuthService AuthService { get; } = new AuthService(_userManager, options);
+
+        public IOrderService OrderService { get; } = new OrderService(_unitOfWork, _mapper, _basketRepository);
     }
 }

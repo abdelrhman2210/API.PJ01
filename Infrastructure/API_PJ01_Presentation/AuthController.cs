@@ -10,17 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace API_PJ01_Presentation
 {
     [ApiController]
-    [Route(template: "api/[controller]")]
+    [Route("api/[controller]")]
     public class AuthController(IServiceManager _serviceManager) : ControllerBase
     {
-        [HttpPost(template: "login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
             var result = await _serviceManager.AuthService.LoginAsync(request);
             return Ok(result);
         }
 
-        [HttpPost(template: "register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
             var result = await _serviceManager.AuthService.RegisterAsync(request);

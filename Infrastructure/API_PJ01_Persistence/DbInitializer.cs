@@ -1,5 +1,6 @@
 ﻿using API_PJ01_Domain.Contracts;
 using API_PJ01_Domain.Entities.Identity;
+using API_PJ01_Domain.Entities.Orders;
 using API_PJ01_Domain.Entities.Products;
 using API_PJ01_Persistence.Data.Contexts;
 using API_PJ01_Persistence.Identity.Contexts;
@@ -31,6 +32,21 @@ namespace API_PJ01_Persistence
                 await _context.Database.MigrateAsync();
             }
             //Seed Data
+
+            #region Delivery DataSeeding
+            if (!_context.DeliveryMethods.Any())
+            {
+                var deliveryData = await File.ReadAllTextAsync(@"..\Infrastructure\API_PJ01_Persistence\DataSeeding\delivery.json");
+
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryData);
+
+                if (deliveryMethods is not null && deliveryMethods.Count > 0)
+                {
+                    await _context.DeliveryMethods.AddRangeAsync(deliveryMethods);
+
+                }
+            }
+            #endregion
 
             #region PB DataSeeding
             if (!_context.ProductBrands.Any())

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API_PJ01_Presentation
 {
     [ApiController]
-    [Route(template: "api/[controller]")]
+    [Route("api/[controller]")]
     public class BasketsController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet] // GET: baseUrl/api/baskets?id
