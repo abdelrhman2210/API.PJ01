@@ -9,6 +9,7 @@ using API_PJ01_Domain.Entities.Products;
 using API_PJ01_Domain.Exceptions.BadRequest;
 using API_PJ01_Domain.Exceptions.NotFound;
 using API_PJ01_Services.Abstractions.Orders;
+using API_PJ01_Services.Specifications.Orders;
 using API_PJ01_Shared.Dtos.Orders;
 using AutoMapper;
 
@@ -69,19 +70,24 @@ namespace API_PJ01_Services.Orders
             #endregion
         }
 
-        public Task<IEnumerable<DeliveryMethodResponse>> GetAllDeliveryMethodsAsync()
+        public async Task<IEnumerable<DeliveryMethodResponse>> GetAllDeliveryMethodsAsync()
         {
-            throw new NotImplementedException();
+            var deliveryMethods = await _unitOfWork.GetRepository<int, DeliveryMethod>().GetAllAsync();
+            return _mapper.Map<IEnumerable<DeliveryMethodResponse>>(deliveryMethods);
         }
 
-        public Task<OrderResponse?> GetOrderByIdForSpecificUserAsync(Guid id, string UserEmail)
+        public async Task<OrderResponse?> GetOrderByIdForSpecificUserAsync(Guid id, string UserEmail)
         {
-            throw new NotImplementedException();
+            var specification = new OrderSpecification(id, UserEmail);
+            var order = await _unitOfWork.GetRepository<Guid, Order>().GetAsync(specification);
+            return _mapper.Map<OrderResponse>(order); 
         }
 
-        public Task<IEnumerable<OrderResponse>> GetOrdersForSpecificUserAsync(string UserEmail)
+        public async Task<IEnumerable<OrderResponse>> GetOrdersForSpecificUserAsync(string UserEmail)
         {
-            throw new NotImplementedException();
+            var specification = new OrderSpecification(UserEmail);
+            var order = await _unitOfWork.GetRepository<Guid, Order>().GetAllAsync(specification);
+            return _mapper.Map<IEnumerable<OrderResponse>>(order);
         }
     }
 }
