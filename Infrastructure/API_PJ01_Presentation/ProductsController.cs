@@ -8,6 +8,7 @@ using API_PJ01_Services.Abstractions;
 using API_PJ01_Shared.Dtos.Pagination;
 using API_PJ01_Shared.Dtos.Products;
 using API_PJ01_Shared.ErrorModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace API_PJ01_Presentation
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [Cache(100)] // Cache for 100 seconds
+        [Authorize]
         public async Task<ActionResult<PaginationResponse<ProductResponse>>> GetAllProductsAsync([FromQuery]ProductQueryParameters parameters)
         {
             var result = await _serviceManager.ProductService.GetAllProductsAsync(parameters);

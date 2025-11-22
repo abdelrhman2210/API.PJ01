@@ -1,12 +1,15 @@
-﻿using API_PJ01_Domain.Contracts;
+﻿using System.Text;
+using API_PJ01_Domain.Contracts;
 using API_PJ01_Domain.Entities.Identity;
 using API_PJ01_Persistence;
 using API_PJ01_Persistence.Identity.Contexts;
 using API_PJ01_Services;
+using API_PJ01_Shared;
 using API_PJ01_Shared.ErrorModels;
 using API_PJ01_Web.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace API_PJ01_Web.Extensions
@@ -21,6 +24,10 @@ namespace API_PJ01_Web.Extensions
             services.AddApplicationServices(configuration);
             services.ConfigureApibehaviourOptions();
             services.AddIdentityServices();
+
+            services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
+
+            services.AddAuthenticationService(configuration);
 
             return services;
         }
@@ -46,6 +53,31 @@ namespace API_PJ01_Web.Extensions
                     };
 
                     return new BadRequestObjectResult(response);
+                };
+            });
+
+            return services;
+        }
+
+        private static IServiceCollection AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtOptions = configuration.GetSection(key: "JwtOptions").Get<JwtOptions>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "Bearer";
+                options.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey)),
                 };
             });
 
@@ -91,6 +123,7 @@ namespace API_PJ01_Web.Extensions
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
