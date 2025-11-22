@@ -14,8 +14,11 @@ using API_PJ01_Services.Auth;
 using API_PJ01_Services.Baskets;
 using API_PJ01_Services.Cache;
 using API_PJ01_Services.Products;
+using API_PJ01_Shared;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace API_PJ01_Services
 {
@@ -24,7 +27,8 @@ namespace API_PJ01_Services
         IMapper _mapper,
         IBasketRepository _basketRepository,
         ICacheRepository _cacheRepository,
-        UserManager<AppUser> _userManager
+        UserManager<AppUser> _userManager,
+        IOptions<JwtOptions> options
         ) : IServiceManager
     {
         public IProductService ProductService { get; } = new ProductService(_unitOfWork , _mapper);
@@ -33,6 +37,6 @@ namespace API_PJ01_Services
 
         public ICacheService CacheService { get; } = new CacheService(_cacheRepository);
 
-        public IAuthService AuthService { get; } = new AuthService(_userManager);
+        public IAuthService AuthService { get; } = new AuthService(_userManager, options);
     }
 }
