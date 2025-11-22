@@ -80,6 +80,9 @@ namespace API_PJ01_Services.Orders
         {
             var specification = new OrderSpecification(id, UserEmail);
             var order = await _unitOfWork.GetRepository<Guid, Order>().GetAsync(specification);
+            if (order is null) {
+                throw new OrderNotFoundException(id);
+            }
             return _mapper.Map<OrderResponse>(order); 
         }
 
