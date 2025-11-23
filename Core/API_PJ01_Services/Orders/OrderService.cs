@@ -55,6 +55,15 @@ namespace API_PJ01_Services.Orders
             var subTotal = orderItems.Sum(item => item.Price * item.Quantity);
             #endregion
 
+            #region 5- Payment Intent ID
+            // Check Order Exists
+            var spec = new OrderWithPaymentIntentSpecifications(basket.PaymentIntentId);
+            var existsOrder = await _unitOfWork.GetRepository<Guid, Order>().GetAsync(spec);
+
+            if (existsOrder is not null)
+                _unitOfWork.GetRepository<Guid, Order>().Delete(existsOrder);
+            #endregion
+
             #region Create Order
             var order = new Order(userEmail, orderAddress, deliveryMethod, orderItems, subTotal, basket.PaymentIntentId);
             #endregion
