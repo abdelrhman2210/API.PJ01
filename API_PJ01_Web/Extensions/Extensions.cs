@@ -29,6 +29,14 @@ namespace API_PJ01_Web.Extensions
 
             services.AddAuthenticationService(configuration);
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+
             return services;
         }
 
@@ -122,7 +130,7 @@ namespace API_PJ01_Web.Extensions
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
 

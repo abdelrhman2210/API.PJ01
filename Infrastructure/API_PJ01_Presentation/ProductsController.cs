@@ -23,7 +23,6 @@ namespace API_PJ01_Presentation
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [Cache(100)] // Cache for 100 seconds
-        [Authorize]
         public async Task<ActionResult<PaginationResponse<ProductResponse>>> GetAllProductsAsync([FromQuery]ProductQueryParameters parameters)
         {
             var result = await _serviceManager.ProductService.GetAllProductsAsync(parameters);
