@@ -10,11 +10,13 @@ using API_PJ01_Services.Abstractions.Auth;
 using API_PJ01_Services.Abstractions.Baskets;
 using API_PJ01_Services.Abstractions.Cache;
 using API_PJ01_Services.Abstractions.Orders;
+using API_PJ01_Services.Abstractions.Payment;
 using API_PJ01_Services.Abstractions.Products;
 using API_PJ01_Services.Auth;
 using API_PJ01_Services.Baskets;
 using API_PJ01_Services.Cache;
 using API_PJ01_Services.Orders;
+using API_PJ01_Services.Payment;
 using API_PJ01_Services.Products;
 using API_PJ01_Shared;
 using AutoMapper;
@@ -30,7 +32,8 @@ namespace API_PJ01_Services
         IBasketRepository _basketRepository,
         ICacheRepository _cacheRepository,
         UserManager<AppUser> _userManager,
-        IOptions<JwtOptions> options
+        IOptions<JwtOptions> options,
+        IConfiguration configuration
         ) : IServiceManager
     {
         public IProductService ProductService { get; } = new ProductService(_unitOfWork , _mapper);
@@ -42,5 +45,7 @@ namespace API_PJ01_Services
         public IAuthService AuthService { get; } = new AuthService(_userManager, options, _mapper);
 
         public IOrderService OrderService { get; } = new OrderService(_unitOfWork, _mapper, _basketRepository);
+
+        public IPaymentService PaymentService { get; } = new PaymentService(_basketRepository, _unitOfWork, configuration, _mapper);
     }
 }
