@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using API_PJ01_Services.Abstractions;
+using API_PJ01_Services.Mapping.Auth;
 using API_PJ01_Services.Mapping.Baskets;
 using API_PJ01_Services.Mapping.Orders;
 using API_PJ01_Services.Mapping.Products;
@@ -20,6 +21,8 @@ namespace API_PJ01_Services
             services.AddAutoMapper(M => M.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(M => M.AddProfile(new BasketProfile()));
             services.AddAutoMapper(M => M.AddProfile(new OrderProfile()));
+            services.AddAutoMapper(M => M.AddProfile(new AuthProfile()));
+
             return services;
         }
     }

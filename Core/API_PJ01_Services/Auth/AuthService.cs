@@ -12,15 +12,69 @@ using API_PJ01_Domain.Exceptions.Unauthorized;
 using API_PJ01_Services.Abstractions.Auth;
 using API_PJ01_Shared;
 using API_PJ01_Shared.Dtos.Auth;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API_PJ01_Services.Auth
 {
-    public class AuthService(UserManager<AppUser> _userManager, IOptions<JwtOptions> options) : IAuthService
+    public class AuthService(UserManager<AppUser> _userManager, IOptions<JwtOptions> options, IMapper mapper) : IAuthService
     {
+        public async Task<bool> CheckEmailExistsAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email) is not null;
+        }
+
+        public async Task<AddressDto?> GetCurrentUserAddressAsync(string email)
+        {
+            var user = await _userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(U => U.Email.ToLower() == email.ToLower());
+            if (user is null) throw new UserNotFoundException(email);
+
+            return mapper.Map<AddressDto>(user.Address);
+        }
+
+        public async Task<UserResponse?> GetCurrentUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null) throw new UserNotFoundException(email);
+
+            return new UserResponse()
+            {
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                Token = await GenerateTokenAsync(user)
+            };
+        }
+
+        public async Task<AddressDto?> UpdateCurrentUserAddressAsync(AddressDto request, string email)
+        {
+            var user = await _userManager.Users.Include(U => U.Address).FirstOrDefaultAsync(U => U.Email.ToLower() == email.ToLower());
+
+            if (user is null) throw new UserNotFoundException(email);
+
+            if (user.Address is null)
+            {
+                // Create new Address
+                user.Address = mapper.Map<Address>(request);
+            }
+            else
+            {
+                // Update The Old Address
+                user.Address.FirstName = request.FirstName;
+                user.Address.LastName = request.LastName;
+                user.Address.City = request.City;
+                user.Address.Street = request.Street;
+                user.Address.Country = request.Country;
+            }
+
+            await _userManager.UpdateAsync(user);
+
+            return mapper.Map<AddressDto>(user.Address);
+        }
+
         public async Task<UserResponse?> LoginAsync(LoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
