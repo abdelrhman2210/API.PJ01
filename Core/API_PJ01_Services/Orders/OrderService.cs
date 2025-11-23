@@ -56,7 +56,7 @@ namespace API_PJ01_Services.Orders
             #endregion
 
             #region Create Order
-            var order = new Order(userEmail, orderAddress, deliveryMethod, orderItems, subTotal);
+            var order = new Order(userEmail, orderAddress, deliveryMethod, orderItems, subTotal, basket.PaymentIntentId);
             #endregion
 
             #region Add Order In DB

@@ -13,13 +13,14 @@ namespace API_PJ01_Domain.Entities.Orders
         {
 
         }
-        public Order(string userEmail, OrderAddress shippingAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, decimal subTotal)
+        public Order(string userEmail, OrderAddress shippingAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, decimal subTotal, string? paymentIntentId)
         {
             UserEmail = userEmail;
             ShippingAddress = shippingAddress;
             DeliveryMethod = deliveryMethod;
             Items = items;
             SubTotal = subTotal;
+            PaymentIntentId = paymentIntentId;
         }
 
         public string UserEmail { get; set; }
@@ -31,5 +32,8 @@ namespace API_PJ01_Domain.Entities.Orders
         public ICollection<OrderItem> Items { get; set; } // Navigation property
         public decimal SubTotal { get; set; } // Price * Quantity of all items
         public decimal GetTotal() => SubTotal + DeliveryMethod.Price; // not mapped
+        public string? PaymentIntentId { get; set; }
+
+
     }
 }
